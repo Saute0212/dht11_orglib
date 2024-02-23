@@ -1,20 +1,18 @@
-import pigpio
+import RPi.GPIO as GPIO
 import time
 
 # Parameter
 DATA_PIN=17
 
-pi = pigpio.pi()
-
 # Initialization of dht11
 def init_dht11():
-    pi.set_mode(DATA_PIN, pigpio.OUTPUT)
-    pi.write(DATA_PIN, 1)
+    GPIO.setmode(DATA_PIN, GPIO.OUT)
+    GPIO.output(DATA_PIN, GPIO.HIGH)
     delay_time(0.5)
-    pi.write(DATA_PIN, 0)
+    GPIO.output(DATA_PIN, GPIO.LOW)
     delay_time(0.02)
-    pi.write(DATA_PIN, 1)
-    pi.set_mode(DATA_PIN, pigpio.INPUT)
+    GPIO.output(DATA_PIN, GPIO.HIGH)
+    GPIO.setmode(DATA_PIN, GPIO.IN)
     
 # Detect an error
 def checksum():
