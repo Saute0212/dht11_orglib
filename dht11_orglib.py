@@ -1,37 +1,32 @@
 import RPi.GPIO as GPIO
 import time
 
-# Parameter
-DATA_PIN=17
-
-# Variables
-
 # Initialization of dht11
-def init_dht11():
-    GPIO.setmode(DATA_PIN, GPIO.OUT)
-    GPIO.output(DATA_PIN, GPIO.HIGH)
+def init_dht11(SelectPin):
+    GPIO.setmode(SelectPin, GPIO.OUT)
+    GPIO.output(SelectPin, GPIO.HIGH)
     delay_time(0.5)
-    GPIO.output(DATA_PIN, GPIO.LOW)
+    GPIO.output(SelectPin, GPIO.LOW)
     delay_time(0.02)
-    GPIO.output(DATA_PIN, GPIO.HIGH)
-    GPIO.setmode(DATA_PIN, GPIO.IN)
+    GPIO.output(SelectPin, GPIO.HIGH)
+    GPIO.setmode(SelectPin, GPIO.IN)
 
 # Read data from dht11
-def data_get():
+def data_get(SelectPin):
     Pulse_cnt = 0
-    level = GPIO.input(DATA_PIN)
+    level = GPIO.input(SelectPin)
 
     # Detect LOW
     while level == 0:
         Pulse_cnt += 5
         delay_time(0.000005)
-        level = GPIO.input(DATA_PIN)
+        level = GPIO.input(SelectPin)
 
     # Detect HIGH
     while level == 1:
         Pulse_cnt += 5
         delay_time(0.000005)
-        level = GPIO.input(DATA_PIN)
+        level = GPIO.input(SelectPin)
 
     # Error : ±10%
     if 70 < Pulse_cnt < 90:
