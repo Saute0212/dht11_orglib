@@ -49,7 +49,15 @@ def checksum(Data):
 # Binary to decimal conversion
 def convert(SourceData, GenerateData):
     for i in range(5):
-        GenerateData[i] = int(''.join(map(str, SourceData[i*8:(i+1)*8])), 2)
+        if i%2 == 0:
+            GenerateData[i] = int(''.join(map(str, SourceData[i*8:(i+1)*8])), 2)
+        else:
+            tmp = SourceData[i*8:(i+1)*8]
+            sum = 0
+            for j in range(8):
+                if tmp[j] == 1:
+                    sum += 1/(2 ** (j+1))
+            GenerateData[i] = sum
 
 # Stops program for requested time (depends on system time)
 def delay_time(DelayTime):
