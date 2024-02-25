@@ -11,6 +11,8 @@ def init_dht11(SelectPin):
     delay_time(0.02)
     GPIO.output(SelectPin, GPIO.HIGH)
     GPIO.setup(SelectPin, GPIO.IN)
+    while data_get(SelectPin) != 2:
+        delay_time(0.000001)
 
 # Read data from dht11
 def data_get(SelectPin):
@@ -45,7 +47,7 @@ def data_get(SelectPin):
 
 # Detect an error
 def checksum(Data):
-    print("checksum")
+    return 0
 
 # Binary to decimal conversion
 def convert(SourceData, GenerateData):

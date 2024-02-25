@@ -23,7 +23,7 @@ while True:
         dht11_orglib.init_dht11(DATA_PIN)
 
     # Get data
-    if dht11_orglib.data_get(DATA_PIN) == 2:
+    # if dht11_orglib.data_get(DATA_PIN) == 2:
         for i in range(40):
             BitsData[i] = dht11_orglib.data_get(DATA_PIN)
     
