@@ -4,25 +4,34 @@ import dht11_orglib
 DATA_PIN = 17
 
 # Variables
-DataBits = [0, 0, 0, 0, 0, 0, 0, 0,
+BitsData = [0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0]
-# HIGH_Humidity = [0, 0, 0, 0, 0, 0, 0, 0]
-# LOW_Humidity = [0, 0, 0, 0, 0, 0, 0, 0]
-# HIGH_Temperature = [0, 0, 0, 0, 0, 0, 0, 0]
-# LOW_Temperature = [0, 0, 0, 0, 0, 0, 0, 0]
-# Parity_bit = [0, 0, 0, 0, 0, 0, 0, 0]
+DecimalData = [0, 0, 0, 0, 0]
 Humidity = 0
 Temperature = 0
-Parity = 0
 
 # main
 while True:
+    # Initialization
     dht11_orglib.init_dht11(DATA_PIN)
-    for i in 40:
-        DataBits[i] = dht11_orglib.data_get(DATA_PIN)
-    for j in 40:
-        print("%d : Data: %d", j, DataBits[j])
+
+    # Get data
+    if dht11_orglib.data_get(DATA_PIN) == 2:
+        for i in range(40):
+            BitsData[i] = dht11_orglib.data_get(DATA_PIN)
     
+        # Convert data(bit to decimal)
+        dht11_orglib.convert(BitsData, DecimalData)
+    
+        # Check data
+        if dht11_orglib.checksum(BitsData) == 0:
+            # Correct data
+            Humidity = 0
+            Temperature = 0
+            print("Humidity:", Humidity, "Temperature:", Temperature)
+        else:
+            # Not correct data
+            print("Error")

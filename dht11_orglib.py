@@ -43,12 +43,13 @@ def data_get(SelectPin):
         return 3
 
 # Detect an error
-def checksum():
+def checksum(Data):
     print("checksum")
 
 # Binary to decimal conversion
-def convert():
-    print("convert")
+def convert(SourceData, GenerateData):
+    for i in range(5):
+        GenerateData[i] = int(''.join(map(str, SourceData[i*8:(i+1)*8])), 2)
 
 # Stops program for requested time (depends on system time)
 def delay_time(DelayTime):
