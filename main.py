@@ -33,8 +33,8 @@ while True:
     # Check data
     if dht11_orglib.checksum(BitsData) == 0:
         # Correct data
-        Humidity = 0
-        Temperature = 0
+        Humidity = DecimalData[0] + DecimalData[1]
+        Temperature = DecimalData[2] + DecimalData[3]
         print("Humidity[%]:", Humidity, "Temperature[℃]:", Temperature)
     else:
         # Not correct data
