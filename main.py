@@ -24,21 +24,21 @@ while True:
 
     # Get data
     # if dht11_orglib.data_get(DATA_PIN) == 2:
-        for i in range(40):
-            BitsData[i] = dht11_orglib.data_get(DATA_PIN)
+    for i in range(40):
+        BitsData[i] = dht11_orglib.data_get(DATA_PIN)
     
-        # Convert data(bit to decimal)
-        dht11_orglib.convert(BitsData, DecimalData)
+    # Convert data(bit to decimal)
+    dht11_orglib.convert(BitsData, DecimalData)
     
-        # Check data
-        if dht11_orglib.checksum(BitsData) == 0:
-            # Correct data
-            Humidity = 0
-            Temperature = 0
-            print("Humidity[%]:", Humidity, "Temperature[℃]:", Temperature)
-        else:
-            # Not correct data
-            print("Error")
+    # Check data
+    if dht11_orglib.checksum(BitsData) == 0:
+        # Correct data
+        Humidity = 0
+        Temperature = 0
+        print("Humidity[%]:", Humidity, "Temperature[℃]:", Temperature)
+    else:
+        # Not correct data
+        print("Error")
             
-        # Reset Falg
-        Flag = 0
+    # Reset Falg
+    Flag = 0
