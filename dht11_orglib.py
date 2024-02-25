@@ -3,6 +3,7 @@ import time
 
 # Initialization of dht11
 def init_dht11(SelectPin):
+    GPIO.setmode(GPIO.BCM)
     GPIO.setmode(SelectPin, GPIO.OUT)
     GPIO.output(SelectPin, GPIO.HIGH)
     delay_time(0.5)
