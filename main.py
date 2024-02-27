@@ -24,8 +24,9 @@ while True:
 
     # Get data
     # if dht11_orglib.data_get(DATA_PIN) == 2:
-    for i in range(40):
-        BitsData[i] = dht11_orglib.data_get(DATA_PIN)
+    # for i in range(40):
+        # BitsData[i] = dht11_orglib.data_get(DATA_PIN)
+    dht11_orglib.data_get(DATA_PIN, BitsData)
     
     # Convert data(bit to decimal)
     dht11_orglib.convert(BitsData, DecimalData)

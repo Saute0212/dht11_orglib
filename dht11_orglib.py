@@ -11,39 +11,63 @@ def init_dht11(SelectPin):
     delay_time(0.02)
     GPIO.output(SelectPin, GPIO.HIGH)
     GPIO.setup(SelectPin, GPIO.IN)
-    while data_get(SelectPin) != 2:
-        delay_time(0.000001)
+    # while data_get(SelectPin) != 2:
+    #     delay_time(0.000001)
+    while True:
+        if GPIO.input(SelectPin) == 0:
+            break
+    while True:
+        if GPIO.input(SelectPin) == 1:
+            break
+    while True:
+        if GPIO.input(SelectPin) == 0:
+            break
 
 # Read data from dht11
-def data_get(SelectPin):
-    Pulse_cnt = 0
-    level = GPIO.input(SelectPin)
+def data_get(SelectPin, Data):
+    for i in range(40):
+        while True:
+            if GPIO.input(SelectPin) == 1:
+                break
+        cnt = 0
+        while GPIO.input(SelectPin) == 1:
+            cnt += 1
+            if cnt > 10:
+                print("Over Time")
+                break
+        if cnt > 5:
+            Data[i] = 1
+        else:
+            Data[i] = 0
 
-    # Detect LOW
-    while level == 0:
-        Pulse_cnt += 5
-        delay_time(0.000005)
-        level = GPIO.input(SelectPin)
+    # Pulse_cnt = 0
+    # level = GPIO.input(SelectPin)
 
-    # Detect HIGH
-    while level == 1:
-        Pulse_cnt += 5
-        delay_time(0.000005)
-        level = GPIO.input(SelectPin)
+    # # Detect LOW
+    # while level == 0:
+    #     Pulse_cnt += 5
+    #     delay_time(0.000005)
+    #     level = GPIO.input(SelectPin)
 
-    # Error : ±10%
-    if 70 < Pulse_cnt < 90:
-        # Data : 0
-        return 0
-    elif 105 < Pulse_cnt < 135:
-        # Data : 1
-        return 1
-    elif 140 < Pulse_cnt < 180:
-        # Data : Ready
-        return 2
-    else:
-        # Error
-        return 3
+    # # Detect HIGH
+    # while level == 1:
+    #     Pulse_cnt += 5
+    #     delay_time(0.000005)
+    #     level = GPIO.input(SelectPin)
+
+    # # Error : ±10%
+    # if 70 < Pulse_cnt < 90:
+    #     # Data : 0
+    #     return 0
+    # elif 105 < Pulse_cnt < 135:
+    #     # Data : 1
+    #     return 1
+    # elif 140 < Pulse_cnt < 180:
+    #     # Data : Ready
+    #     return 2
+    # else:
+    #     # Error
+    #     return 3
 
 # Detect an error
 def checksum(Data):
