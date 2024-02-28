@@ -1,79 +1,41 @@
 import RPi.GPIO as GPIO
 import time
-import signal
-import sys
 
-def signal_handler(signal, frame):
-    print("Program terminated")
-    GPIO.cleanup()
-    sys.exit(0)
+# GPIOピンの設定
+GPIO_PIN = 17
 
-def read_dht11(pin):
-    data = []
+# GPIOの初期化
+GPIO.setmode(GPIO.BCM)
+# GPIO.setup(GPIO_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    # ピンをLOWにしてセンサーに信号を送信
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, GPIO.LOW)
-    time.sleep(0.02)  # 20ms待機
+# 割り込み発生時のコールバック関数
+def interrupt_callback(channel):
+    if GPIO.input(channel):
+        print("LOW->HIGH")
+    else:
+        print("HIGH->LOW")
 
-    # ピンをHIGHにしてデータを読み取り開始
-    GPIO.output(pin, GPIO.HIGH)
-    GPIO.setup(pin, GPIO.IN)
-
-    # ピンがLOWになるまで待機
-    while GPIO.input(pin) == GPIO.LOW:
-        continue
-
-    # ピンがHIGHになるまで待機
-    while GPIO.input(pin) == GPIO.HIGH:
-        continue
-
-    # データを読み取る
-    for _ in range(40):
-        while GPIO.input(pin) == GPIO.LOW:
-            continue
-        count = 0
-        while GPIO.input(pin) == GPIO.HIGH:
-            count += 1
-            if count > 100:
-                break
-        data.append(count)
-
-    # ピンを元に戻す
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, GPIO.HIGH)
-
-    return data
-
-def parse_dht11_data(data):
-    # データを解析して温度と湿度を取得
-    humidity_bit = data[0:8]
-    humidity_point_bit = data[8:16]
-    temperature_bit = data[16:24]
-    temperature_point_bit = data[24:32]
-    checksum_bit = data[32:40]
-
-    humidity = int("".join([str(bit) for bit in humidity_bit]), 2)
-    humidity_point = int("".join([str(bit) for bit in humidity_point_bit]), 2)
-    temperature = int("".join([str(bit) for bit in temperature_bit]), 2)
-    temperature_point = int("".join([str(bit) for bit in temperature_point_bit]), 2)
-    checksum = int("".join([str(bit) for bit in checksum_bit]), 2)
-
-    return humidity, temperature, checksum
-
-if __name__ == "__main__":
-    signal.signal(signal.SIGINT, signal_handler)  # プログラム終了時に割り込みハンドラを呼ぶ
-
+def init_dht11(SelectPin):
     GPIO.setmode(GPIO.BCM)
-    DHT_PIN = 4  # Raspberry PiのGPIOピン番号に合わせて設定
+    GPIO.setup(SelectPin, GPIO.OUT)
+    GPIO.output(SelectPin, GPIO.HIGH)
+    delay_time(0.5)
+    GPIO.output(SelectPin, GPIO.LOW)
+    delay_time(0.02)
+    GPIO.output(SelectPin, GPIO.HIGH)
+    GPIO.setup(SelectPin, GPIO.IN)
 
-    while True:
-        data = read_dht11(DHT_PIN)
-        humidity, temperature, checksum = parse_dht11_data(data)
+# Stops program for requested time (depends on system time)
+def delay_time(DelayTime):
+    StartTime = time.monotonic()
+    ElapsedTime = 0
+    while ElapsedTime < DelayTime:
+        ElapsedTime = time.monotonic() - StartTime
 
-        if checksum == (humidity + temperature) % 256:
-            print(f'Temperature: {temperature}°C, Humidity: {humidity}%')
-        else:
-            print('Checksum error. Data may be invalid.')
+# 割り込みイベントの設定
+GPIO.add_event_detect(GPIO_PIN, GPIO.BOTH, callback=interrupt_callback)
 
-        time.sleep(2)  # 適切なインターバルを設定
+print("waiting...")
+while True:
+    init_dht11(GPIO_PIN)
+    delay_time(10)
